@@ -8,17 +8,16 @@ Module Module1
         Dim S As String = ConfControlKeys.Confirmations
 
         Dim D As New ConnectionData
-        D.Box = "N6A"
+        D.Box = "N6P"
         D.Login = "AR4041"
         D.SSO = True
-        'D.Password = "hmetal23"
 
         Dim SC As New SAPConnector
         Dim Con = SC.GetSAPConnection(D)
 
-        Dim PO As New POChanges(Con, "4503442320")
-        PO.BlockInd("10") = True
-        PO.CommitChanges()
+        Dim EKPO As New EKPO_Report(Con)
+        EKPO.IncludeDocument("4503442320")
+        EKPO.Execute()
 
     End Sub
 

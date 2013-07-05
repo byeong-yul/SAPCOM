@@ -215,8 +215,8 @@ Public NotInheritable Class SAPConnector
             Dim CS As String = SNC_ConnString(Box, User)
             If Not CS Is Nothing Then
                 Try
+                    C.SkipGetSystemInfo = True
                     C.Open(CS)
-                    GetConnection = C
                 Catch ex As Exception
                     SM = "(E) " & ex.Message
                 End Try
@@ -235,11 +235,14 @@ Public NotInheritable Class SAPConnector
                 C.Language = "EN"
                 Try
                     C.Open(HD.Balancing)
-                    GetConnection = C
                 Catch ex As Exception
                     SM = "(E) " & ex.Message
                 End Try
             End If
+        End If
+
+        If C.Ping Then
+            GetConnection = C
         End If
 
     End Function
