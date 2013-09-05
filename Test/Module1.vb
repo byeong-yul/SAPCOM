@@ -8,16 +8,22 @@ Module Module1
         Dim S As String = ConfControlKeys.Confirmations
 
         Dim D As New ConnectionData
-        D.Box = "N6P"
+        D.Box = "GBP"
         D.Login = "AR4041"
         D.SSO = True
+        D.Password = "hmetal25"
 
         Dim SC As New SAPConnector
         Dim Con = SC.GetSAPConnection(D)
 
-        Dim EKPO As New EKPO_Report(Con)
-        EKPO.IncludeDocument("4503442320")
-        EKPO.Execute()
+        Dim MAKT As New SAPCOM.MAKT_Report(Con)
+        'MARA.AddCustomField("MAKTG")
+
+
+        MAKT.IncludeMaterial("10058703")
+
+        MAKT.Execute()
+
 
     End Sub
 

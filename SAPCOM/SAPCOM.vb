@@ -9718,6 +9718,60 @@ Public NotInheritable Class MARA_Report : Inherits RTable_Report
 
 End Class
 
+Public NotInheritable Class MAKT_Report : Inherits RTable_Report
+
+    Sub New(ByVal Box As String, ByVal User As String, ByVal App As String)
+
+        MyBase.New(Box, User, App)
+
+    End Sub
+
+    Sub New(ByVal Connection)
+
+        MyBase.New(Connection)
+
+    End Sub
+
+    Public Sub IncludeMaterial(ByVal Number As String)
+
+        If Not T Is Nothing Then
+            T.ParamInclude("MATNR", Left("000000000000000000", 18 - Len(Number)) & Number)
+        End If
+
+    End Sub
+
+    Public Sub ExcludeMaterial(ByVal Number As String)
+
+        If Not T Is Nothing Then
+            T.ParamExclude("MATNR", Left("000000000000000000", 18 - Len(Number)) & Number)
+        End If
+
+    End Sub
+
+    ''' <summary>
+    ''' Returns: [Material] [Description 1] [Description 2]
+    ''' </summary>
+    ''' <remarks></remarks>
+    Public Overrides Sub Execute()
+
+        If Not RF Then Exit Sub
+
+        T.TableName = "MAKT"
+
+        T.AddField("MATNR", "Material")
+        T.AddField("MAKTX", "Description 1")
+        T.AddField("MAKTG", "Description 2")
+
+        MyBase.Execute()
+
+        If T.Result.Rows.Count > 0 Then
+            T.ColumnToDoubleStr("Material")
+        End If
+
+    End Sub
+
+End Class
+
 Public NotInheritable Class MARM_Report : Inherits RTable_Report
 
     Sub New(ByVal Box As String, ByVal User As String, ByVal App As String)
