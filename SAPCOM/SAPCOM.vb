@@ -13418,33 +13418,44 @@ Public NotInheritable Class OpenReqs_Report
 
     Sub New(ByVal Box As String, ByVal User As String, ByVal App As String)
 
-        OpenSession(Box, User, App)
-
-    End Sub
-
-    Private Sub OpenSession(ByVal Box As String, ByVal User As String, ByVal App As String)
-
         Dim C As New SAPConnector
         Con = C.GetSAPConnection(Box, User, App)
         If Not Con Is Nothing Then
-            Try
-                Q = Con.CreateQuery(WorkSpace.GlobalArea, "/SAPQUERY/ME", "MEBANF")
-                Q.Variant = "SAP&MEBANF"
-                IncludeParam("P_QERLBA", "X")
-                IncludeParam("P_QFREIG", "X")
-                DNT = New DataTable("Req Numbers")
-                DNT.Columns.Add("Req Number", System.Type.GetType("System.String"))
-                Dim Keys(0) As DataColumn
-                Keys(0) = DNT.Columns("Req Number")
-                DNT.PrimaryKey = Keys
-                SF = True
-            Catch ex As Exception
-                Q = Nothing
-                EM = ex.Message
-            End Try
+            InitBAPI()
         Else
             EM = C.Status
         End If
+
+    End Sub
+
+    Sub New(ByVal Connection As Object)
+
+        If Connection.Ping Then
+            Con = Connection
+            InitBAPI()
+        Else
+            EM = "Connection already closed"
+        End If
+
+    End Sub
+
+    Private Sub InitBAPI()
+
+        Try
+            Q = Con.CreateQuery(WorkSpace.GlobalArea, "/SAPQUERY/ME", "MEBANF")
+            Q.Variant = "SAP&MEBANF"
+            IncludeParam("P_QERLBA", "X")
+            IncludeParam("P_QFREIG", "X")
+            DNT = New DataTable("Req Numbers")
+            DNT.Columns.Add("Req Number", System.Type.GetType("System.String"))
+            Dim Keys(0) As DataColumn
+            Keys(0) = DNT.Columns("Req Number")
+            DNT.PrimaryKey = Keys
+            SF = True
+        Catch ex As Exception
+            Q = Nothing
+            EM = ex.Message
+        End Try
 
     End Sub
 
