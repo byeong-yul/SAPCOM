@@ -13710,7 +13710,7 @@ Public NotInheritable Class OpenReqs_Report
             End If
 
             SF = True
-            EndSession()
+
         Catch ex As Exception
             EM = ex.Message
         End Try

@@ -8,22 +8,17 @@ Module Module1
         Dim S As String = ConfControlKeys.Confirmations
 
         Dim D As New ConnectionData
-        D.Box = "GBP"
+        D.Box = "N6P"
         D.Login = "AR4041"
         D.SSO = True
-        D.Password = "hmetal25"
+        'D.Password = "hmetal25"
 
         Dim SC As New SAPConnector
         Dim Con = SC.GetSAPConnection(D)
 
-        Dim MAKT As New SAPCOM.MAKT_Report(Con)
-        'MARA.AddCustomField("MAKTG")
-
-
-        MAKT.IncludeMaterial("10058703")
-
-        MAKT.Execute()
-
+        Dim PT As New PTerms_Report(Con)
+        PT.Execute()
+        PT.Data.WriteXml(My.Computer.FileSystem.SpecialDirectories.Desktop & "\PTerms N6P.xml")
 
     End Sub
 
