@@ -2783,6 +2783,24 @@ Public MustInherit Class Contract_Changes : Inherits SC_BAPI_Base
 
     End Property
 
+    Public Property Purchasing_Group() As String
+
+        Get
+            Purchasing_Group = Nothing
+            If Not BAPI Is Nothing Then
+                Purchasing_Group = BAPI.Exports("HEADER").ParamValue("PUR_GROUP")
+            End If
+        End Get
+
+        Set(ByVal value As String)
+            If Not BAPI Is Nothing Then
+                BAPI.Exports("HEADER").ParamValue("PUR_GROUP") = value
+                BAPI.Exports("HEADERX").ParamValue("PUR_GROUP") = "X"
+            End If
+        End Set
+
+    End Property
+
     Public Property Validty_End() As String
 
         Get

@@ -5,10 +5,8 @@ Module Module1
 
     Sub Main()
 
-        Dim S As String = ConfControlKeys.Confirmations
-
         Dim D As New ConnectionData
-        D.Box = "N6P"
+        D.Box = "L7P"
         D.Login = "AR4041"
         D.SSO = True
         'D.Password = "hmetal25"
@@ -16,9 +14,7 @@ Module Module1
         Dim SC As New SAPConnector
         Dim Con = SC.GetSAPConnection(D)
 
-        Dim PT As New PTerms_Report(Con)
-        PT.Execute()
-        PT.Data.WriteXml(My.Computer.FileSystem.SpecialDirectories.Desktop & "\PTerms N6P.xml")
+        Dim OA As New OAChanges("L7P", "AR4041", Nothing, "4600005655")
 
     End Sub
 
