@@ -42,9 +42,9 @@
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ERPConnect35, Version=4.11.3.10, Culture=neutral, PublicKeyToken=737201975e95eeee, processorArchitecture=MSIL">
+    <Reference Include="ERPConnect35, Version=4.13.9.3, Culture=neutral, PublicKeyToken=737201975e95eeee, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Program Files\ERPConnect\ERPConnect35.dll</HintPath>
+      <HintPath>..\ERPConnect35.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

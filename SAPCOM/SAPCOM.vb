@@ -64,14 +64,26 @@ End Enum
 
 #Region "SAP Connectivity"
 
-Public Structure ConnectionData
+Public NotInheritable Class ConnectionData
 
     Public Box As String
     Public Login As String
     Public SSO As Boolean
     Public Password As String
 
-End Structure
+    Public Sub New()
+    End Sub
+
+    Public Sub New(aBox As String, aLogin As String, Optional aSSO As Boolean = True, Optional aPassword As String = Nothing)
+
+        Box = aBox
+        Login = aLogin
+        SSO = aSSO
+        Password = aPassword
+
+    End Sub
+
+End Class
 
 Public NotInheritable Class SAPConnector
 
@@ -7486,6 +7498,7 @@ Public NotInheritable Class EKKO_Report : Inherits RTable_Report
     '''    [Validity Start] [Validity End] [Y Refer] [Salesperson] [Telephone] [OA] [O Reference]
     ''' </summary>
     ''' <remarks></remarks>
+    ''' 
     Public Overrides Sub Execute()
 
         If Not RF Then Exit Sub
