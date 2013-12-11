@@ -6,18 +6,16 @@ Module Module1
     Sub Main()
 
         Dim D As New ConnectionData
-        D.Box = "F7P"
-        D.Login = "BJ7774"
-        D.SSO = false
-        D.Password = "t0d4y55"
+        D.Box = "L6P"
+        D.Login = "AR4041"
+        D.SSO = True
 
         Dim SC As New SAPConnector
         Dim Con = SC.GetSAPConnection(D)
 
-        Dim R As New ZFIX_T03_Report(Con)
-        R.IncludeCustomParam("REFNR", "18149964")
-        R.AddCustomField("LEDGERTEXT")
-        R.AddCustomField("WERKS")
+        Dim R As New LFB1_Report(Con)
+        R.Include_CCode("811")
+        R.IncludeVendor("15081993")
         R.Execute()
 
     End Sub
