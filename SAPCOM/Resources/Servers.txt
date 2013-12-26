@@ -201,17 +201,7 @@
     <LogonGroup>A7PRFC</LogonGroup>
     <UseLoadBalancing>true</UseLoadBalancing>
     <SNC_PN>p:sap/a7p-db@NA.PG.COM</SNC_PN>
-  </Servers>   
-  <Servers>
-    <Box>A7P</Box>
-    <Host>A7P</Host>
-    <Number>0</Number>
-    <Client>410</Client>
-    <MessageServer>A7P.na.pg.com</MessageServer>
-    <LogonGroup>A7PRFC</LogonGroup>
-    <UseLoadBalancing>true</UseLoadBalancing>
-    <SNC_PN>p:sap/a7p-db@NA.PG.COM</SNC_PN>
-  </Servers>      
+  </Servers>    
   <Servers>
     <Box>F5P</Box>
     <Host>F5P</Host>

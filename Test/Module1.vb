@@ -6,9 +6,10 @@ Module Module1
     Sub Main()
 
         Dim D As New ConnectionData
-        D.Box = "L6P"
+        D.Box = "A7P"
         D.Login = "AR4041"
-        D.SSO = True
+        D.SSO = False
+        D.Password = "hmetal27"
 
         Dim SC As New SAPConnector
         Dim Con = SC.GetSAPConnection(D)
