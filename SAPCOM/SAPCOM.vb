@@ -11038,6 +11038,14 @@ Public NotInheritable Class ZMEP_PVL_Report : Inherits RTable_Report
 
     End Sub
 
+    Public Sub Include_Vendor(ByVal Code As String)
+
+        If Not T Is Nothing Then
+            T.ParamInclude("VENDNO", Code.PadLeft(10, "0"))
+        End If
+
+    End Sub
+
     Public Sub Include_Country(ByVal Code As String)
 
         If Not T Is Nothing Then
@@ -11191,6 +11199,55 @@ Public NotInheritable Class ADR6_Report : Inherits RTable_Report
         T.AddField("SMTP_SRCH", "eMail2")
 
         MyBase.Execute()
+
+    End Sub
+
+End Class
+
+Public NotInheritable Class ZBBP_SC_Data_Report : Inherits RTable_Report
+
+    Sub New(ByVal Box As String, ByVal User As String, ByVal App As String)
+
+        MyBase.New(Box, User, App)
+
+    End Sub
+
+    Sub New(ByVal Connection As Object)
+
+        MyBase.New(Connection)
+
+    End Sub
+
+    Public Sub Include_TransNo(ByVal Number As String)
+
+        If Not T Is Nothing Then
+            T.ParamInclude("OBJECT_ID", Number.PadLeft(10, "0"))
+        End If
+
+    End Sub
+
+
+    ''' <summary>
+    ''' Returns: [TransNo] [Posting Date] [Box] [User Name] [Vendor Name]
+    ''' </summary>
+    ''' <remarks></remarks>
+    Public Overrides Sub Execute()
+
+        If Not RF Then Exit Sub
+
+        T.TableName = "ZBBP_SC_Data"
+
+        T.AddField("OBJECT_ID", "TransNo")
+        T.AddField("POSTING_DATE", "Posting Date")
+        T.AddField("BE_LOG_SYSTEM", "Box")
+        T.AddField("REQUESTOR_NAME", "User Name")
+        T.AddField("VENDOR_NAME", "Vendor Name")
+
+        MyBase.Execute()
+
+        If SF AndAlso T.Result.Rows.Count > 0 Then
+            T.ColumnToDateStr("Posting Date")
+        End If
 
     End Sub
 
