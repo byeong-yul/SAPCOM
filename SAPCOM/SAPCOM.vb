@@ -9084,6 +9084,120 @@ Public NotInheritable Class EINE_Report : Inherits RTable_Report
 
 End Class
 
+Public NotInheritable Class EKBZ_Report : Inherits RTable_Report
+
+    Sub New(ByVal Box As String, ByVal User As String, ByVal App As String)
+
+        MyBase.New(Box, User, App)
+
+    End Sub
+
+    Sub New(ByVal Connection As Object)
+
+        MyBase.New(Connection)
+
+    End Sub
+
+    Public Sub Include_DocNumber(ByVal Number As String)
+
+        If Not T Is Nothing Then
+            T.ParamInclude("BELNR", Number)
+        End If
+
+    End Sub
+
+    Public Sub Exclude_DocNumber(ByVal Number As String)
+
+        If Not T Is Nothing Then
+            T.ParamExclude("BELNR", Number)
+        End If
+
+    End Sub
+
+    Public Sub Include_PurchasingDoc(ByVal Number As String)
+
+        If Not T Is Nothing Then
+            T.ParamInclude("EBELN", Number)
+        End If
+
+    End Sub
+
+    Public Sub Exclude_PurchasingDoc(ByVal Number As String)
+
+        If Not T Is Nothing Then
+            T.ParamExclude("EBELN", Number)
+        End If
+
+    End Sub
+
+    ''' <summary>
+    ''' Returns: [Client] [Purchasing Document] [Item] [Step number] ...
+    ''' </summary>
+    ''' <remarks></remarks>
+    Public Overrides Sub Execute()
+
+        If Not RF Then Exit Sub
+
+        T.TableName = "EKBZ"
+
+        T.AddField("MANDT", "Client")
+        T.AddField("EBELN", "Purchasing Document")
+        T.AddField("EBELP", "Item")
+        T.AddField("STUNR", "Step number")
+        T.AddField("ZAEHK", "Counter")
+        T.AddField("VGABE", "Trans./event type")
+        T.AddField("GJAHR", "Fiscal Year")
+        T.AddField("BELNR", "Document Number")
+        T.AddField("BUZEI", "Material Doc.Item")
+        T.AddField("BEWTP", "PO History Category")
+        T.AddField("BUDAT", "Posting Date")
+        T.AddField("MENGE", "Quantity")
+        T.AddField("DMBTR", "Amount in LC")
+        T.AddField("WRBTR", "Amount")
+        T.AddField("WAERS", "Currency")
+        T.AddField("AREWR", "GR/IR clearing value in local currency")
+        T.AddField("SHKZG", "Debit/Credit Ind.")
+        T.AddField("XBLNR", "Reference")
+        T.AddField("FRBNR", "Bill of Lading")
+        T.AddField("LIFNR", "Vendor")
+        T.AddField("CPUDT", "Entry Date")
+        T.AddField("CPUTM", "Time of Entry")
+        T.AddField("REEWR", "Invoice Value")
+        T.AddField("REFWR", "Invoice value in FC")
+        T.AddField("BWTAR", "Valuation Type")
+        T.AddField("KSCHL", "Condition Type")
+        T.AddField("BPMNG", "Qty in OPUn")
+        T.AddField("AREWW", "GR/IR clearing value in FC")
+        T.AddField("HSWAE", "Local currency")
+        T.AddField("VNETW", "Net value")
+        T.AddField("ERNAM", "Created by")
+        T.AddField("SHKKO", "Debit/Credit Ind._0")
+        T.AddField("AREWB", "GR/IR clearing value in FC_0")
+        T.AddField("REWRB", "FC invoice amount")
+        T.AddField("SAPRL", "SAP Release")
+        T.AddField("MENGE_POP", "Quantity_0")
+        T.AddField("DMBTR_POP", "Amount in LC_0")
+        T.AddField("WRBTR_POP", "Amount_0")
+        T.AddField("BPMNG_POP", "Qty in OPUn_0")
+        T.AddField("AREWR_POP", "GR/IR clearing value in local currency_0")
+        T.AddField("KUDIF", "Exch. Rate Diff. Amt")
+        T.AddField("XMACC", "Multiple Acct Assignment")
+        T.AddField("WKURS", "Exchange Rate")
+
+        MyBase.Execute()
+
+        If Not T.Result Is Nothing AndAlso T.Result.Rows.Count > 0 Then
+
+            T.ColumnToDateStr("Posting Date")
+            T.ColumnToDateStr("Entry Date")
+            T.ColumnToDoubleStr("Vendor")
+
+        End If
+
+    End Sub
+
+End Class
+
 Public NotInheritable Class BKPF_Report : Inherits RTable_Report
 
     Sub New(ByVal Box As String, ByVal User As String, ByVal App As String)
