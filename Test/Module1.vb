@@ -6,16 +6,16 @@ Module Module1
     Sub Main()
 
         Dim D As New ConnectionData
-        D.Box = "GEP"
-        D.Login = "BV7795"
-        D.SSO = False
-        D.Password = "114137"
+        D.Box = "L6P"
+        D.Login = "AR4041"
+        D.SSO = True
+        'D.Password = "114137"
 
         Dim SC As New SAPConnector
         Dim Con = SC.GetSAPConnection(D)
 
-        Dim R As New ZBBP_SC_Data_Report(Con)
-        R.Include_TransNo("113942819")
+        Dim R As New Buyers_Report(Con)
+        R.IncludePGrp("BA1")
         R.Execute()
 
     End Sub
