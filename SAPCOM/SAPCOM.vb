@@ -8593,11 +8593,6 @@ Public NotInheritable Class EORD_Report : Inherits RTable_Report
         T.AddField("SRM_CONTRACT_ID", "Central Contract")
         T.AddField("SRM_CONTRACT_ITM", "Central Contract Item")
 
-        T.AddKeyColumn(0)
-        T.AddKeyColumn(1)
-        T.AddKeyColumn(10)
-        T.AddKeyColumn(11)
-
         MyBase.Execute()
 
         If SF AndAlso T.Result.Rows.Count > 0 Then
