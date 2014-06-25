@@ -6769,6 +6769,30 @@ Public NotInheritable Class POCreator : Inherits SC_BAPI_Base
 
     End Property
 
+    Public Property WBS_Element() As String
+
+        Get
+            If Not BAPI Is Nothing Then
+                WBS_Element = BAPI.Tables("POACCOUNT").Rows(LII)("WBS_ELEMENT")
+            Else
+                WBS_Element = Nothing
+            End If
+        End Get
+
+        Set(ByVal value As String)
+            If Not BAPI Is Nothing Then
+                Dim TRow = Nothing
+                Dim TRowX = Nothing
+                SetTableRow("POACCOUNT", CStr(LIN), TRow, TRowX)
+                TRow("SERIAL_NO") = "1"
+                TRow("WBS_ELEMENT") = Left(value, 24)
+                TRowX("SERIAL_NO") = "1"
+                TRowX("WBS_ELEMENT") = "X"
+            End If
+        End Set
+
+    End Property
+
     Public Property GL_Account() As String
 
         Get
