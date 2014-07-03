@@ -5,8 +5,18 @@ Module Module1
 
     Sub Main()
 
-        Dim SLI As New Read_SAP_Logon
-        Dim Dt As DataTable = SLI.Get_SAPLogonIni
+        Dim D As New ConnectionData
+        D.Box = "GBP"
+        D.Login = "AR4041"
+        D.SSO = True
+        D.Password = "hmetal27"
+
+        Dim SC As New SAPConnector
+        Dim con = SC.GetSAPConnection(D)
+
+        Dim R As New SAPExchgRate(con)
+        R.ValidFrom = "07/01/2014"
+        R.Execute()
 
         'Dim D As New ConnectionData
         'D.Box = "GBA"

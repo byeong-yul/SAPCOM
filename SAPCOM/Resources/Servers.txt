@@ -68,19 +68,9 @@
     <Number>1</Number>
     <Client>480</Client>
     <MessageServer>GBP.na.pg.com</MessageServer>
-    <LogonGroup></LogonGroup>
-    <UseLoadBalancing>False</UseLoadBalancing>
+    <LogonGroup>SPACE</LogonGroup>
+    <UseLoadBalancing>true</UseLoadBalancing>
     <SNC_PN>p:sap/gbp-db@NA.PG.COM</SNC_PN>
-  </Servers>
-  <Servers>
-    <Box>GBA</Box>
-    <Host>GBA</Host>
-    <Number>3</Number>
-    <Client>480</Client>
-    <MessageServer>gba.na.pg.com</MessageServer>
-    <LogonGroup></LogonGroup>
-    <UseLoadBalancing>false</UseLoadBalancing>
-    <SNC_PN>p:sap/gba-db@NA.PG.COM</SNC_PN>
   </Servers>
   <Servers>
     <Box>L6A</Box>
@@ -232,4 +222,14 @@
     <UseLoadBalancing>true</UseLoadBalancing>
     <SNC_PN>p:sap/f7p-app3@NA.PG.COM</SNC_PN>
   </Servers>   
+  <Servers>
+    <Box>GBA</Box>
+    <Host>GBA</Host>
+    <Number>3</Number>
+    <Client>480</Client>
+    <MessageServer>gba.na.pg.com</MessageServer>
+    <LogonGroup></LogonGroup>
+    <UseLoadBalancing>false</UseLoadBalancing>
+    <SNC_PN>p:sap/gba-db@NA.PG.COM</SNC_PN>
+  </Servers>
 </NewDataSet>

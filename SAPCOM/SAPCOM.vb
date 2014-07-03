@@ -6621,6 +6621,158 @@ Public NotInheritable Class POCreator : Inherits SC_BAPI_Base
 
     End Property
 
+    Public Property Batch() As String
+
+        Get
+            If Not BAPI Is Nothing Then
+                Batch = BAPI.Tables("POITEM").Rows(LII)("BATCH")
+            Else
+                Batch = Nothing
+            End If
+        End Get
+
+        Set(ByVal value As String)
+            If Not BAPI Is Nothing Then
+                BAPI.Tables("POITEM").Rows(LII)("BATCH") = value
+                BAPI.Tables("POITEMX").Rows(LII)("BATCH") = "X"
+            End If
+        End Set
+
+    End Property
+
+    Public Property Requisitioner() As String
+
+        Get
+            If Not BAPI Is Nothing Then
+                Requisitioner = BAPI.Tables("POITEM").Rows(LII)("PREQ_NAME")
+            Else
+                Requisitioner = Nothing
+            End If
+        End Get
+
+        Set(ByVal value As String)
+            If Not BAPI Is Nothing Then
+                BAPI.Tables("POITEM").Rows(LII)("PREQ_NAME") = value
+                BAPI.Tables("POITEMX").Rows(LII)("PREQ_NAME") = "X"
+            End If
+        End Set
+
+    End Property
+
+    Public Property IM_Material() As String
+
+        Get
+            If Not BAPI Is Nothing Then
+                IM_Material = BAPI.Tables("POITEM").Rows(LII)("EMATERIAL")
+            Else
+                IM_Material = Nothing
+            End If
+        End Get
+
+        Set(ByVal value As String)
+            If Not BAPI Is Nothing Then
+                BAPI.Tables("POITEM").Rows(LII)("EMATERIAL") = value.Trim.PadLeft(18, "0")
+                BAPI.Tables("POITEMX").Rows(LII)("EMATERIAL") = "X"
+            End If
+        End Set
+
+    End Property
+
+    Public Property Inforecord() As String
+
+        Get
+            If Not BAPI Is Nothing Then
+                Inforecord = BAPI.Tables("POITEM").Rows(LII)("INFO_REC")
+            Else
+                Inforecord = Nothing
+            End If
+        End Get
+
+        Set(ByVal value As String)
+            If Not BAPI Is Nothing Then
+                BAPI.Tables("POITEM").Rows(LII)("INFO_REC") = value.Trim.PadLeft(18, "0")
+                BAPI.Tables("POITEMX").Rows(LII)("INFO_REC") = "X"
+            End If
+        End Set
+
+    End Property
+
+    Public Property Requisition() As String
+
+        Get
+            If Not BAPI Is Nothing Then
+                Requisition = BAPI.Tables("POITEM").Rows(LII)("PREQ_NO")
+            Else
+                Requisition = Nothing
+            End If
+        End Get
+
+        Set(ByVal value As String)
+            If Not BAPI Is Nothing Then
+                BAPI.Tables("POITEM").Rows(LII)("PREQ_NO") = value.Trim.PadLeft(18, "0")
+                BAPI.Tables("POITEMX").Rows(LII)("PREQ_NO") = "X"
+            End If
+        End Set
+
+    End Property
+
+    Public Property Req_Item As String
+
+        Get
+            If Not BAPI Is Nothing Then
+                Req_Item = BAPI.Tables("POITEM").Rows(LII)("PREQ_ITEM")
+            Else
+                Req_Item = Nothing
+            End If
+        End Get
+
+        Set(ByVal value As String)
+            If Not BAPI Is Nothing Then
+                BAPI.Tables("POITEM").Rows(LII)("PREQ_ITEM") = value.Trim.PadLeft(18, "0")
+                BAPI.Tables("POITEMX").Rows(LII)("PREQ_ITEM") = "X"
+            End If
+        End Set
+
+    End Property
+
+    Public Property Agreement As String
+
+        Get
+            If Not BAPI Is Nothing Then
+                Agreement = BAPI.Tables("POITEM").Rows(LII)("AGREEMENT")
+            Else
+                Agreement = Nothing
+            End If
+        End Get
+
+        Set(ByVal value As String)
+            If Not BAPI Is Nothing Then
+                BAPI.Tables("POITEM").Rows(LII)("AGREEMENT") = value.Trim.PadLeft(18, "0")
+                BAPI.Tables("POITEMX").Rows(LII)("AGREEMENT") = "X"
+            End If
+        End Set
+
+    End Property
+
+    Public Property Agmt_Item As String
+
+        Get
+            If Not BAPI Is Nothing Then
+                Agmt_Item = BAPI.Tables("POITEM").Rows(LII)("AGMT_ITEM")
+            Else
+                Agmt_Item = Nothing
+            End If
+        End Get
+
+        Set(ByVal value As String)
+            If Not BAPI Is Nothing Then
+                BAPI.Tables("POITEM").Rows(LII)("AGMT_ITEM") = value.Trim.PadLeft(18, "0")
+                BAPI.Tables("POITEMX").Rows(LII)("AGMT_ITEM") = "X"
+            End If
+        End Set
+
+    End Property
+
     Public Property ItemQuantity() As String
 
         Get
@@ -6740,6 +6892,30 @@ Public NotInheritable Class POCreator : Inherits SC_BAPI_Base
                 TRowX("SCHED_LINE") = "1"
                 TRowX("DELIVERY_DATE") = "X"
                 TRow("STAT_DATE") = "X"
+            End If
+        End Set
+
+    End Property
+
+    Public Property Del_Date_Cat() As String
+
+        Get
+            If Not BAPI Is Nothing Then
+                Del_Date_Cat = BAPI.Tables("POSCHEDULE").Rows(LII)("DEL_DATCAT_EXT")
+            Else
+                Del_Date_Cat = Nothing
+            End If
+        End Get
+
+        Set(ByVal value As String)
+            If Not BAPI Is Nothing Then
+                Dim TRow = Nothing
+                Dim TRowX = Nothing
+                SetTableRow("POSCHEDULE", CStr(LIN), TRow, TRowX)
+                TRow("SCHED_LINE") = "1"
+                TRow("DEL_DATCAT_EXT") = value.Trim
+                TRowX("SCHED_LINE") = "1"
+                TRowX("DEL_DATCAT_EXT") = "X"
             End If
         End Set
 
