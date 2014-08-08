@@ -6747,7 +6747,7 @@ Public NotInheritable Class POCreator : Inherits SC_BAPI_Base
 
         Set(ByVal value As String)
             If Not BAPI Is Nothing Then
-                BAPI.Tables("POITEM").Rows(LII)("AGREEMENT") = value.Trim.PadLeft(18, "0")
+                BAPI.Tables("POITEM").Rows(LII)("AGREEMENT") = value
                 BAPI.Tables("POITEMX").Rows(LII)("AGREEMENT") = "X"
             End If
         End Set
@@ -6766,7 +6766,7 @@ Public NotInheritable Class POCreator : Inherits SC_BAPI_Base
 
         Set(ByVal value As String)
             If Not BAPI Is Nothing Then
-                BAPI.Tables("POITEM").Rows(LII)("AGMT_ITEM") = value.Trim.PadLeft(18, "0")
+                BAPI.Tables("POITEM").Rows(LII)("AGMT_ITEM") = value
                 BAPI.Tables("POITEMX").Rows(LII)("AGMT_ITEM") = "X"
             End If
         End Set
