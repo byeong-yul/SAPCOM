@@ -183,6 +183,16 @@
     <SNC_PN></SNC_PN>
   </Servers>  
   <Servers>
+    <Box>GRP</Box>
+    <Host>GRP</Host>
+    <Number>10</Number>
+    <Client>400</Client>
+    <MessageServer>GRP.na.pg.com</MessageServer>
+    <LogonGroup>SPACE</LogonGroup>
+    <UseLoadBalancing>true</UseLoadBalancing>
+    <SNC_PN>p:sap/grp-app12@NA.PG.COM</SNC_PN>
+  </Servers>  
+  <Servers>
     <Box>A5P</Box>
     <Host>A5P</Host>
     <Number>0</Number>

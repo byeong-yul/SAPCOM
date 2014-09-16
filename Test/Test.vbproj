@@ -49,6 +49,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Common-Functions\Common Functions\bin\Debug\Common Functions.dll</HintPath>
     </Reference>
+    <Reference Include="ERPConnect35, Version=4.13.9.3, Culture=neutral, PublicKeyToken=737201975e95eeee, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Projects\PSS Framework\Dependencies\ERPConnect35.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />

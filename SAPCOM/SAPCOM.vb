@@ -2712,6 +2712,840 @@ Public NotInheritable Class SACreator : Inherits Contract_Creator
 
 End Class
 
+Public MustInherit Class Contract_Changes_1 : Inherits SC_BAPI_Base
+
+    Private Contract_Type As Byte = ContractType.Unknown
+    Private Info_Type As Type
+    Private DocNum As String = Nothing
+    Private OInfo = Nothing
+    Private S_ID As Integer = -1
+    Private LI As String = Nothing
+
+    Public Sub New(ByVal Box As String, ByVal User As String, ByVal App As String, ByVal CT As Byte)
+
+        MyBase.New(Box, User, App)
+        Contract_Type = CT
+
+    End Sub
+
+    Public Sub New(ByVal Connection As Object, ByVal CT As Byte)
+
+        MyBase.New(Connection)
+        Contract_Type = CT
+
+    End Sub
+
+    Public Property Info() As Object
+
+        Get
+            If OInfo Is Nothing And Not Contract_Type = ContractType.Unknown And Not DocNum Is Nothing Then
+                SetupInfoObject()
+            End If
+            Info = OInfo
+        End Get
+
+        Set(ByVal value As Object)
+            If ValidateInfoObject(value) Then
+                OInfo = value
+            End If
+        End Set
+
+    End Property
+
+    Friend Property Number() As String
+
+        Get
+            Number = DocNum
+        End Get
+
+        Set(ByVal value As String)
+            If Not Con Is Nothing And Contract_Type <> ContractType.Unknown Then
+                DocNum = value.Trim
+                Try
+                    RF = True
+                    BAPI = Con.CreateBapi(BAPI_Name, "Change")
+                    BAPI.Exports("PurchasingDocument").ParamValue = DocNum.PadLeft(10, "0")
+                    OInfo = Nothing
+                    S_ID = -1
+                Catch ex As Exception
+                    ReDim R(0)
+                    R(0) = ex.Message
+                    RF = False
+                End Try
+            End If
+        End Set
+
+    End Property
+
+    Public Property Payment_Terms() As String
+
+        Get
+            Payment_Terms = Nothing
+            If Not BAPI Is Nothing Then
+                Payment_Terms = BAPI.Exports("HEADER").ParamValue("PMNTTRMS")
+            End If
+        End Get
+
+        Set(ByVal value As String)
+            If Not BAPI Is Nothing Then
+                BAPI.Exports("HEADER").ParamValue("PMNTTRMS") = value
+                BAPI.Exports("HEADERX").ParamValue("PMNTTRMS") = "X"
+            End If
+        End Set
+
+    End Property
+
+    Public Property Purchasing_Group() As String
+
+        Get
+            Purchasing_Group = Nothing
+            If Not BAPI Is Nothing Then
+                Purchasing_Group = BAPI.Exports("HEADER").ParamValue("PUR_GROUP")
+            End If
+        End Get
+
+        Set(ByVal value As String)
+            If Not BAPI Is Nothing Then
+                BAPI.Exports("HEADER").ParamValue("PUR_GROUP") = value
+                BAPI.Exports("HEADERX").ParamValue("PUR_GROUP") = "X"
+            End If
+        End Set
+
+    End Property
+
+    Public Property Purchasing_Org() As String
+
+        Get
+            Purchasing_Org = Nothing
+            If Not BAPI Is Nothing Then
+                Purchasing_Org = BAPI.Exports("HEADER").ParamValue("PURCH_ORG")
+            End If
+        End Get
+
+        Set(ByVal value As String)
+            If Not BAPI Is Nothing Then
+                BAPI.Exports("HEADER").ParamValue("PURCH_ORG") = value
+                BAPI.Exports("HEADERX").ParamValue("PURCH_ORG") = "X"
+            End If
+        End Set
+
+    End Property
+
+    Public Property Validty_End() As String
+
+        Get
+            Validty_End = Nothing
+            If Not BAPI Is Nothing Then
+                If IsNumeric(BAPI.Exports("HEADER").ParamValue("VPER_END")) Then
+                    Validty_End = SAPDate2NetDate(BAPI.Exports("HEADER").ParamValue("VPER_END")).ToShortDateString
+                End If
+            End If
+        End Get
+
+        Set(ByVal value As String)
+            If Not BAPI Is Nothing Then
+                If IsDate(value) Then
+                    BAPI.Exports("HEADER").ParamValue("VPER_END") = NetDate2SAPDate(value)
+                    BAPI.Exports("HEADERX").ParamValue("VPER_END") = "X"
+                End If
+            End If
+        End Set
+
+    End Property
+
+    Public Property DeletionInd_Deleted(ByVal Item As String) As Boolean
+
+        Get
+            If Not BAPI Is Nothing Then
+                Dim I As Integer = GetItemIndex("ITEM", "ITEM_NO", Item)
+                If Not I < 0 Then
+                    If BAPI.Tables("ITEM").Rows(I).Item("DELETE_IND") = "L" Then
+                        DeletionInd_Deleted = True
+                    Else
+                        DeletionInd_Deleted = False
+                    End If
+                Else
+                    DeletionInd_Deleted = False
+                End If
+            Else
+                DeletionInd_Deleted = False
+            End If
+        End Get
+
+        Set(ByVal value As Boolean)
+            If Not BAPI Is Nothing Then
+                Dim TRow = Nothing
+                Dim TRowX = Nothing
+                SetTableRow("ITEM", Item, TRow, TRowX)
+                If value Then
+                    TRow("DELETE_IND") = "L"
+                Else
+                    TRow("DELETE_IND") = " "
+                End If
+                TRowX("DELETE_IND") = "X"
+            End If
+        End Set
+
+    End Property
+
+    Public Property DeletionInd_Blocked(ByVal Item As String) As Boolean
+
+        Get
+            If Not BAPI Is Nothing Then
+                Dim I As Integer = GetItemIndex("ITEM", "ITEM_NO", Item)
+                If Not I < 0 Then
+                    If BAPI.Tables("ITEM").Rows(I).Item("DELETE_IND") = "S" Then
+                        DeletionInd_Blocked = True
+                    Else
+                        DeletionInd_Blocked = False
+                    End If
+                Else
+                    DeletionInd_Blocked = False
+                End If
+            Else
+                DeletionInd_Blocked = False
+            End If
+        End Get
+
+        Set(ByVal value As Boolean)
+            If Not BAPI Is Nothing Then
+                Dim TRow = Nothing
+                Dim TRowX = Nothing
+                SetTableRow("ITEM", Item, TRow, TRowX)
+                If value Then
+                    TRow("DELETE_IND") = "S"
+                Else
+                    TRow("DELETE_IND") = " "
+                End If
+                TRowX("DELETE_IND") = "X"
+            End If
+        End Set
+
+    End Property
+
+    Public Property PrintPrice(ByVal Item As String) As Boolean
+
+        Get
+            If Not BAPI Is Nothing Then
+                Dim I As Integer = GetItemIndex("ITEM", "ITEM_NO", Item)
+                If Not I < 0 Then
+                    If BAPI.Tables("ITEM").Rows(I).Item("PRNT_PRICE") = "X" Then
+                        PrintPrice = True
+                    Else
+                        PrintPrice = False
+                    End If
+                Else
+                    PrintPrice = False
+                End If
+            Else
+                PrintPrice = False
+            End If
+        End Get
+
+        Set(ByVal value As Boolean)
+            If Not BAPI Is Nothing Then
+                Dim TRow = Nothing
+                Dim TRowX = Nothing
+                SetTableRow("ITEM", Item, TRow, TRowX)
+                If value Then
+                    TRow("PRNT_PRICE") = "X"
+                Else
+                    TRow("PRNT_PRICE") = " "
+                End If
+                TRowX("PRNT_PRICE") = "X"
+            End If
+        End Set
+
+    End Property
+
+    Public Property PDT(ByVal Item As String) As String
+
+        Get
+            PDT = Nothing
+            If Not BAPI Is Nothing Then
+                Dim I As Integer = GetItemIndex("ITEM", "ITEM_NO", Item)
+                If Not I < 0 Then
+                    PDT = BAPI.Tables("ITEM").Rows(I).Item("PLAN_DEL")
+                End If
+            End If
+        End Get
+
+        Set(ByVal value As String)
+            If Not BAPI Is Nothing Then
+                Dim TRow = Nothing
+                Dim TRowX = Nothing
+                SetTableRow("ITEM", Item, TRow, TRowX)
+                TRow("PLAN_DEL") = value
+                TRowX("PLAN_DEL") = "X"
+            End If
+        End Set
+
+    End Property
+
+    Public Property StorageLocation(ByVal Item As String) As String
+
+        Get
+            StorageLocation = Nothing
+            If Not BAPI Is Nothing Then
+                Dim I As Integer = GetItemIndex("ITEM", "ITEM_NO", Item)
+                If Not I < 0 Then
+                    StorageLocation = BAPI.Tables("ITEM").Rows(I).Item("STGE_LOC")
+                End If
+            End If
+        End Get
+
+        Set(ByVal value As String)
+            If Not BAPI Is Nothing Then
+                Dim TRow = Nothing
+                Dim TRowX = Nothing
+                SetTableRow("ITEM", Item, TRow, TRowX)
+                TRow("STGE_LOC") = value
+                TRowX("STGE_LOC") = "X"
+            End If
+        End Set
+
+    End Property
+
+    Public Property OverDelTolerance(ByVal Item As String) As String
+
+        Get
+            OverDelTolerance = Nothing
+            If Not BAPI Is Nothing Then
+                Dim I As Integer = GetItemIndex("ITEM", "ITEM_NO", Item)
+                If Not I < 0 Then
+                    OverDelTolerance = BAPI.Tables("ITEM").Rows(I).Item("OVER_DLV_TOL")
+                End If
+            End If
+        End Get
+
+        Set(ByVal value As String)
+            If Not BAPI Is Nothing Then
+                Dim TRow = Nothing
+                Dim TRowX = Nothing
+                SetTableRow("ITEM", Item, TRow, TRowX)
+                TRow("OVER_DLV_TOL") = value
+                TRowX("OVER_DLV_TOL") = "X"
+            End If
+        End Set
+
+    End Property
+
+    Public Property UnderDelTolerance(ByVal Item As String) As String
+
+        Get
+            UnderDelTolerance = Nothing
+            If Not BAPI Is Nothing Then
+                Dim I As Integer = GetItemIndex("ITEM", "ITEM_NO", Item)
+                If Not I < 0 Then
+                    UnderDelTolerance = BAPI.Tables("ITEM").Rows(I).Item("UNDER_DLV_TOL")
+                End If
+            End If
+        End Get
+
+        Set(ByVal value As String)
+            If Not BAPI Is Nothing Then
+                Dim TRow = Nothing
+                Dim TRowX = Nothing
+                SetTableRow("ITEM", Item, TRow, TRowX)
+                TRow("UNDER_DLV_TOL") = value
+                TRowX("UNDER_DLV_TOL") = "X"
+            End If
+        End Set
+
+    End Property
+
+    Public Property ConfControl(ByVal Item As String) As String
+
+        Get
+            ConfControl = Nothing
+            If Not BAPI Is Nothing Then
+                Dim I As Integer = GetItemIndex("ITEM", "ITEM_NO", Item)
+                If Not I < 0 Then
+                    ConfControl = BAPI.Tables("ITEM").Rows(I).Item("CONF_CTRL")
+                End If
+            End If
+        End Get
+
+        Set(ByVal value As String)
+            If Not BAPI Is Nothing Then
+                Dim TRow = Nothing
+                Dim TRowX = Nothing
+                SetTableRow("ITEM", Item, TRow, TRowX)
+                TRow("CONF_CTRL") = value
+                TRowX("CONF_CTRL") = "X"
+            End If
+        End Set
+
+    End Property
+
+    Public Property TaxCode(ByVal Item As String) As String
+
+        Get
+            If Not BAPI Is Nothing Then
+                Dim I As Integer = GetItemIndex("ITEM", "ITEM_NO", Item)
+                If Not I < 0 Then
+                    TaxCode = BAPI.Tables("ITEM").Rows(I).Item("TAX_CODE")
+                Else
+                    TaxCode = Nothing
+                End If
+            Else
+                TaxCode = Nothing
+            End If
+        End Get
+
+        Set(ByVal value As String)
+            If Not BAPI Is Nothing Then
+                Dim TRow = Nothing
+                Dim TRowX = Nothing
+                SetTableRow("ITEM", Item, TRow, TRowX)
+                TRow("TAX_CODE") = value.ToUpper
+                TRowX("TAX_CODE") = "X"
+            End If
+        End Set
+
+    End Property
+
+    Public Function AddMaterial(ByVal Material As String, ByVal Quantity As String, ByVal NetPrice As String, ByVal Plant As String, _
+                                Optional ByVal Per As Object = Nothing, Optional ByVal UOM As Object = Nothing) As String
+
+        AddMaterial = Nothing
+        If BAPI Is Nothing Then Exit Function
+
+        Dim TRow
+        Dim TRowX
+
+        Dim Item As String = NewItemNumber()
+
+        TRow = BAPI.Tables("ITEM").AddRow
+        TRowX = BAPI.Tables("ITEMX").AddRow
+
+        TRow("ITEM_NO") = Item.PadLeft(5, "0")
+        TRow("MATERIAL") = Material.PadLeft(18, "0")
+        TRow("TARGET_QTY") = Quantity
+        TRow("NET_PRICE") = NetPrice
+        TRow("PLANT") = Plant
+
+        TRowX("ITEM_NO") = Item.PadLeft(5, "0")
+        TRowX("MATERIAL") = "X"
+        TRowX("TARGET_QTY") = "X"
+        TRowX("NET_PRICE") = "X"
+        TRowX("PLANT") = "X"
+
+        If Not UOM Is Nothing AndAlso Not DBNull.Value.Equals(UOM) AndAlso UOM <> "" Then
+            TRow("PO_UNIT") = UOM.ToUpper
+            TRowX("PO_UNIT") = "X"
+        End If
+        If Not Per Is Nothing AndAlso Not DBNull.Value.Equals(Per) AndAlso Per <> "" Then
+            TRow("PRICE_UNIT") = Per
+            TRowX("PRICE_UNIT") = "X"
+        End If
+
+        AddMaterial = Item
+
+    End Function
+
+
+    Public Function Item_Last_Validity(Item) As String
+
+        Item_Last_Validity = Nothing
+        If BAPI Is Nothing Then Exit Function
+        If OInfo Is Nothing Then SetupInfoObject()
+        Item = Item.PadLeft(5, "0")
+
+        Try
+            Dim TRow
+            Dim TRowX
+            Dim ILV = OInfo.ItemLastValidity(Item)
+
+            TRow = BAPI.Tables("Item_Cond_Validity").AddRow
+            TRow("ITEM_NO") = ILV("ITEM_NO")
+            TRow("SERIAL_ID") = ILV("SERIAL_ID")
+            TRow("PLANT") = ILV("PLANT")
+            TRow("VALID_FROM") = ILV("VALID_FROM")
+            TRow("VALID_TO") = ILV("VALID_TO")
+
+            TRowX = BAPI.Tables("Item_Cond_ValidityX").AddRow
+            TRowX("ITEM_NO") = ILV("ITEM_NO")
+            TRowX("VALID_FROM") = "X"
+            TRowX("VALID_TO") = "X"
+            TRowX("SERIAL_ID") = "X"
+            TRowX("PLANT") = "X"
+
+            For Each CR In OInfo.ItemLastConditions(Item)
+                TRow = BAPI.Tables("Item_Condition").AddRow
+                For I = 0 To CR.columns.count - 1
+                    TRow(I) = CR(I)
+                Next
+                TRowX = BAPI.Tables("Item_ConditionX").AddRow
+                TRowX("ITEM_NO") = CR("ITEM_NO")
+                TRowX("SERIAL_ID") = CR("SERIAL_ID")
+                TRowX("COND_TYPE") = CR("COND_TYPE")
+            Next
+
+            Item_Last_Validity = ILV("SERIAL_ID")
+
+        Catch ex As Exception
+            Sts = ex.Message
+        End Try
+
+    End Function
+
+    Public Function Item_NewValidity_Period(ByVal Item As String, ByVal VStart As Date, ByVal VEnd As Date) As String
+
+        Item_NewValidity_Period = Nothing
+        If BAPI Is Nothing Then Exit Function
+        Try
+
+            If S_ID = -1 Then
+                If OInfo Is Nothing Then SetupInfoObject()
+                S_ID = CInt(OInfo.LastValidityID) + 1
+            End If
+
+            Dim VID As String = S_ID.ToString.PadLeft(10, "0")
+            S_ID += 1
+
+            Item = Item.PadLeft(5, "0")
+
+            Dim TRow = BAPI.Tables("Item_Cond_Validity").AddRow
+            TRow("ITEM_NO") = Item
+            TRow("SERIAL_ID") = VID
+            TRow("PLANT") = ""
+            TRow("VALID_FROM") = ERPConnect.ConversionUtils.NetDate2SAPDate(VStart)
+            TRow("VALID_TO") = ERPConnect.ConversionUtils.NetDate2SAPDate(VEnd)
+
+            Dim TRowX = BAPI.Tables("Item_Cond_ValidityX").AddRow
+            TRowX("ITEM_NO") = Item
+            TRowX("SERIAL_ID") = "X"
+            TRowX("PLANT") = "X"
+            TRowX("VALID_FROM") = "X"
+            TRowX("VALID_TO") = "X"
+
+            Item_NewValidity_Period = VID
+
+        Catch ex As Exception
+            Sts = ex.Message
+        End Try
+
+    End Function
+
+    Public Function Item_NewValidity_WithReference(ByVal Item As String, ByVal VStart As Date, ByVal VEnd As Date, ByVal Price As String, _
+        Optional ByVal Per As Object = Nothing, Optional ByVal UOM As Object = Nothing, Optional Price_Condition As String = "PB00") As String
+
+        Item_NewValidity_WithReference = Nothing
+        If BAPI Is Nothing Then Exit Function
+
+        Try
+
+            Dim VID As String = Item_NewValidity_Period(Item, VStart, VEnd)
+            Item = Item.PadLeft(5, "0")
+
+            Dim CR = Nothing
+            Dim I As Integer
+            Dim TRow
+            Dim TRowX
+
+            For Each CR In OInfo.ItemLastConditions(Item)
+                CR("SERIAL_ID") = VID
+                If CR("COND_TYPE") = Price_Condition Then
+                    CR("COND_VALUE") = Price
+                    If Not Per Is Nothing AndAlso Not DBNull.Value.Equals(Per) AndAlso Per <> "" Then
+                        CR("COND_P_UNT") = Per
+                    End If
+                    If Not UOM Is Nothing AndAlso Not DBNull.Value.Equals(UOM) AndAlso UOM <> "" Then
+                        CR("COND_UNIT") = UOM.ToUpper
+                    End If
+                End If
+                TRow = BAPI.Tables("Item_Condition").AddRow
+                For I = 0 To CR.columns.count - 1
+                    TRow(I) = CR(I)
+                Next
+                TRowX = BAPI.Tables("Item_ConditionX").AddRow
+                For I = 0 To TRowX.columns.count - 1
+                    TRowX(I) = "X"
+                Next
+                TRowX("ITEM_NO") = Item
+            Next
+
+            Item_NewValidity_WithReference = VID
+
+        Catch ex As Exception
+            Sts = ex.Message
+        End Try
+
+    End Function
+
+
+    Public Sub Update_Condition(Validity_ID As String, ByVal Item As String, Condition As String, Optional Value As Object = Nothing, Optional Currency As Object = Nothing,
+                            Optional UOM As Object = Nothing, Optional Per As Object = Nothing, Optional Vendor As Object = Nothing, Optional DelInd As Object = Nothing)
+
+        If BAPI Is Nothing Then Exit Sub
+
+        Item = Item.PadLeft(5, "0")
+        Condition = Condition.Trim.ToUpper
+
+        Dim TRow = Nothing
+        For Each CRow In BAPI.Tables("Item_Condition").Rows
+            If CRow("SERIAL_ID") = Validity_ID AndAlso CRow("ITEM_NO") = Item AndAlso CRow("COND_TYPE") = Condition Then
+                TRow = CRow
+            End If
+        Next
+
+        If TRow Is Nothing Then Exit Sub
+
+        Dim TRowX = Nothing
+        For Each CRow In BAPI.Tables("Item_ConditionX").Rows
+            If CRow("SERIAL_ID") = Validity_ID AndAlso CRow("ITEM_NO") = Item AndAlso CRow("COND_TYPE") = Condition Then
+                TRowX = CRow
+            End If
+        Next
+
+        If Not Value Is Nothing AndAlso Not DBNull.Value.Equals(Value) AndAlso IsNumeric(Value) Then
+            TRow("COND_VALUE") = Value
+            TRowX("COND_VALUE") = "X"
+        End If
+        If Not Currency Is Nothing AndAlso Not DBNull.Value.Equals(Currency) AndAlso Currency <> "" Then
+            TRow("CURRENCY") = Currency.ToUpper
+            TRowX("CURRENCY") = "X"
+        End If
+        If Not UOM Is Nothing AndAlso Not DBNull.Value.Equals(UOM) AndAlso UOM <> "" Then
+            TRow("COND_UNIT") = UOM.ToUpper
+            TRowX("COND_UNIT") = "X"
+        End If
+        If Not Per Is Nothing AndAlso Not DBNull.Value.Equals(Per) AndAlso Per <> "" Then
+            TRow("COND_P_UNT") = Per
+            TRowX("COND_P_UNT") = "X"
+        End If
+        If Not Vendor Is Nothing AndAlso Not DBNull.Value.Equals(Vendor) Then
+            TRow("VENDOR_NO") = Vendor.ToString.PadLeft(10, "0")
+            TRowX("VENDOR_NO") = "X"
+        End If
+        If Not DelInd Is Nothing Then
+            If DelInd = "X" Then
+                TRow("DELETION_IND") = "X"
+            Else
+                TRow("DELETION_IND") = " "
+            End If
+            TRowX("DELETION_IND") = "X"
+        End If
+
+        '
+        '  FROM OLD METHOD
+        '
+        'If TRow("SCALE_BASE_TY") <> "" And TRow("COND_TYPE") = "ZOA1" Then
+        '    TRow("SCALE_BASE_TY") = ""
+        'End If
+        'If (TRow("SCALE_BASE_TY") = "C" Or TRow("SCALE_BASE_TY") = "B") Then
+        '    If TRow("SCALE_UNIT") = "" Then TRow("SCALE_UNIT") = TRow("COND_UNIT")
+        '    If TRow("SCALE_CURR") = "" Then TRow("SCALE_CURR") = TRow("CURRENCY")
+        'End If
+
+    End Sub
+
+    Public Sub New_Condition(Validity_ID As String, ByVal Item As String, ByVal Condition As String, ByVal Value As String, ByVal Currency As Object, ByVal UOM As Object, _
+                              Optional ByVal Per As Object = Nothing, Optional ByVal Vendor As Object = Nothing)
+
+        If BAPI Is Nothing Then Exit Sub
+
+        Dim TRow = Nothing
+        Dim TRowX = Nothing
+        Item = Item.PadLeft(5, "0")
+
+        Dim CC As String = "0"
+        For Each CR In BAPI.Tables("Item_Condition").Rows
+            If CR("SERIAL_ID") = Validity_ID AndAlso CR("ITEM_NO") = Item Then
+                If Val(CC) < Val(CR("COND_COUNT")) Then
+                    CC = CR("COND_COUNT")
+                End If
+            End If
+        Next
+        CC = CStr(Val(CC) + 1).PadLeft(2, "0")
+
+        TRow = BAPI.Tables("Item_Condition").AddRow
+        TRowX = BAPI.Tables("Item_ConditionX").AddRow
+
+        TRow("ITEM_NO") = Item
+        TRow("SERIAL_ID") = Validity_ID
+        TRow("COND_COUNT") = CC
+        TRow("COND_TYPE") = Condition.Trim.ToUpper
+        TRow("NUMERATOR") = "1"
+        TRow("DENOMINATOR") = "1"
+
+        TRowX("ITEM_NO") = Item
+        TRowX("SERIAL_ID") = "X"
+        TRowX("COND_COUNT") = "X"
+        TRowX("COND_TYPE") = "X"
+        TRowX("NUMERATOR") = "X"
+        TRowX("DENOMINATOR") = "X"
+
+        TRow("COND_VALUE") = Value
+        If Currency Is Nothing OrElse DBNull.Value.Equals(Currency) Then Currency = ""
+        TRow("CURRENCY") = Currency.ToUpper
+        If UOM Is Nothing OrElse DBNull.Value.Equals(UOM) Then UOM = ""
+        TRow("COND_UNIT") = UOM.ToUpper
+
+        TRowX("COND_VALUE") = "X"
+        TRowX("CURRENCY") = "X"
+        TRowX("COND_UNIT") = "X"
+
+        If Not Per Is Nothing AndAlso Not DBNull.Value.Equals(Per) Then
+            TRow("COND_P_UNT") = Per
+            TRowX("COND_P_UNT") = "X"
+        End If
+        If Not Vendor Is Nothing AndAlso Not DBNull.Value.Equals(Vendor) Then
+            TRow("VENDOR_NO") = Vendor.ToString.PadLeft(10, "0")
+            TRowX("VENDOR_NO") = "X"
+        End If
+
+    End Sub
+
+
+    Private Function NewItemNumber() As String
+
+        Dim NIN As String
+        If LI Is Nothing Then
+            If OInfo Is Nothing Then SetupInfoObject()
+            LI = CStr(Val(OInfo.ItemNumbers(OInfo.ItemNumbers.GetUpperBound(0))))
+        End If
+        NIN = (Val(LI) + Val(OInfo.Item_Interval)).ToString
+        NewItemNumber = NIN
+        LI = NIN
+
+    End Function
+
+    Private Function BAPI_Name() As String
+
+        BAPI_Name = Nothing
+        Select Case Contract_Type
+            Case ContractType.OutlineAgreement
+                BAPI_Name = "PurchasingContract"
+            Case ContractType.SchedulingAgreement
+                BAPI_Name = "PurchSchedAgreement"
+        End Select
+
+    End Function
+
+    Private Function ValidateInfoObject(ByVal O As Object) As Boolean
+
+        ValidateInfoObject = False
+        Select Case Contract_Type
+            Case ContractType.OutlineAgreement
+                ValidateInfoObject = O.GetType.Equals(GetType(OAInfo))
+            Case ContractType.SchedulingAgreement
+                ValidateInfoObject = O.GetType.Equals(GetType(SAInfo))
+        End Select
+
+    End Function
+
+    Private Sub SetupInfoObject()
+
+        Select Case Contract_Type
+            Case ContractType.OutlineAgreement
+                OInfo = New OAInfo(Con, DocNum)
+            Case ContractType.SchedulingAgreement
+                OInfo = New SAInfo(Con, DocNum)
+        End Select
+
+    End Sub
+
+    Public Sub NewHeaderText(ByVal TextID As String, ByVal Text As String)
+
+        If BAPI Is Nothing Then Exit Sub
+
+        Dim A As String()
+        Dim I As Integer
+        Dim TRow
+        Dim SR As New StringReader(Text)
+        Dim S As String
+
+        While True
+            S = SR.ReadLine
+            If S Is Nothing Then
+                Exit While
+            Else
+                A = BAPITextSplit(S)
+                I = 1
+                Do While I <= UBound(A)
+                    TRow = BAPI.Tables("Header_Text").AddRow
+                    TRow("TEXT_ID") = TextID
+                    If I = 1 Then
+                        TRow("TEXT_FORM") = "*"
+                    Else
+                        TRow("TEXT_FORM") = ""
+                    End If
+                    TRow("TEXT_LINE") = A(I)
+                    I = I + 1
+                Loop
+            End If
+        End While
+
+    End Sub
+
+    Public Sub InsertHeaderText(ByVal TextID As String, ByVal Text As String)
+
+        If BAPI Is Nothing Then Exit Sub
+
+        Dim TRow
+        Dim SR As New StringReader(Text)
+
+        NewHeaderText(TextID, Text)
+
+        If OInfo Is Nothing Then SetupInfoObject()
+        Dim HTA As SAPText() = CType(OInfo, Contract_Info).HeaderTextArray(TextID, "Header_Text")
+        Dim HT As SAPText
+        If Not HTA Is Nothing Then
+            For Each HT In HTA
+                TRow = BAPI.Tables("Header_Text").AddRow
+                TRow("TEXT_ID") = TextID
+                TRow("TEXT_FORM") = HT.Format
+                TRow("TEXT_LINE") = HT.Text
+            Next
+        End If
+
+    End Sub
+
+End Class
+
+
+Public NotInheritable Class SAChanges_1 : Inherits Contract_Changes_1
+
+    Public Sub New(ByVal Box As String, ByVal User As String, ByVal App As String, Optional ByVal CNumber As String = Nothing)
+
+        MyBase.New(Box, User, App, ContractType.SchedulingAgreement)
+        If RF And Not CNumber Is Nothing Then
+            Number = CNumber
+        End If
+
+    End Sub
+
+    Public Sub New(ByVal Connection As Object, Optional ByVal OInfo As Object = Nothing, Optional ByVal CNumber As String = Nothing)
+
+        MyBase.New(Connection, ContractType.SchedulingAgreement)
+        If RF And Not CNumber Is Nothing Then
+            Number = CNumber
+        End If
+        If Not OInfo Is Nothing Then
+            Info = OInfo
+        End If
+
+    End Sub
+
+    Public Property SANumber() As String
+
+        Get
+            SANumber = Number
+        End Get
+
+        Set(ByVal value As String)
+            If RF Then
+                Number = value
+            End If
+        End Set
+
+    End Property
+
+End Class
+
+
 Public MustInherit Class Contract_Changes : Inherits SC_BAPI_Base
 
     Private Contract_Type As Byte = ContractType.Unknown
@@ -3200,6 +4034,53 @@ Public MustInherit Class Contract_Changes : Inherits SC_BAPI_Base
         End Try
 
     End Function
+
+    Public Sub Delete_Condition(Item As String, Condition As String, Optional ByVal VID As String = Nothing, Optional ByVal CC As String = Nothing)
+
+        If BAPI Is Nothing Then Exit Sub
+        If Not Get_Updating_VP_ID(Item) Is Nothing Then Exit Sub
+        If OInfo Is Nothing Then SetupInfoObject()
+        Item = Item.PadLeft(5, "0")
+        Try
+            Dim TRow
+            Dim TRowX
+
+            Dim ILV = OInfo.ItemLastValidity(Item)
+            TRow = BAPI.Tables("Item_Cond_Validity").AddRow
+            TRowX = BAPI.Tables("Item_Cond_ValidityX").AddRow
+            TRow("ITEM_NO") = Item
+            TRow("SERIAL_ID") = ILV("SERIAL_ID")
+            TRow("PLANT") = ILV("PLANT")
+            TRow("VALID_FROM") = ILV("VALID_FROM")
+            TRow("VALID_TO") = ILV("VALID_TO")
+            TRowX("VALID_FROM") = "X"
+            TRowX("VALID_TO") = "X"
+            TRowX("ITEM_NO") = Item
+            TRowX("SERIAL_ID") = "X"
+            TRowX("PLANT") = "X"
+
+            Dim CR
+            Dim I As Integer
+            For Each CR In OInfo.ItemLastConditions(Item)
+                If CR("COND_TYPE") = Condition Then
+                    CR("DELETION_IND") = "X"
+                End If
+                CR("ITEM_NO") = Item
+                TRow = BAPI.Tables("Item_Condition").AddRow
+                For I = 0 To CR.columns.count - 1
+                    TRow(I) = CR(I)
+                Next
+                TRowX = BAPI.Tables("Item_ConditionX").AddRow
+                For I = 0 To TRowX.columns.count - 1
+                    TRowX(I) = "X"
+                Next
+                TRowX("ITEM_NO") = Item
+            Next
+        Catch ex As Exception
+            Sts = ex.Message
+        End Try
+
+    End Sub
 
     Public Function Item_NewValidity_WithReference(ByVal Item As String, ByVal VStart As Date, ByVal VEnd As Date, ByVal Price As String, _
             Optional ByVal Per As Object = Nothing, Optional ByVal UOM As Object = Nothing) As String
