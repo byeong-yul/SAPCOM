@@ -135,7 +135,7 @@ Public NotInheritable Class SAPConnector
         SNC_ConnString = Nothing
         Dim HD As HostData = GetHostData(Box)
         If HD.Validate AndAlso HD.SNC_PN <> "" Then
-            If Box = "L7P" Or Box = "A7P" Then
+            If Box = "L7P" Or Box = "A7P" Or Box = "GBP" Then
                 SNC_ConnString = "ASHOST=" & HD.Server & " sysnr=" & HD.Number & " client=" & HD.Client & " group=" & HD.Group & " user=" & User & " snc_mode=1 snc_partnername=" & HD.SNC_PN
             Else
                 SNC_ConnString = "r3name=" & HD.Host & " sysnr=" & HD.Number & " client=" & HD.Client & " group=" & HD.Group & " user=" & User & " snc_mode=1 snc_partnername=" & HD.SNC_PN

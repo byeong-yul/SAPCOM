@@ -1,98 +1,105 @@
 ﻿Imports SAPCOM
-Imports Common_Functions
 Imports ERPConnect
 
 Module Module1
 
     Sub Main()
 
-        Dim D As New ConnectionData
-        D.Box = "N6A"
-        D.Login = "AR4041"
-        D.SSO = True
-
+        Dim C As New ConnectionData
+        C.Box = "GBP"
+        C.Login = "AR4041"
+        C.SSO = True
+        C.Password = "hmetal27"
         Dim SC As New SAPConnector
-        Dim con = SC.GetSAPConnection(D)
+        Dim con = SC.GetSAPConnection(C)
 
-        Dim BAPI = con.CreateBapi("PurchSchedAgreement", "Change")
-        BAPI.Exports("PurchasingDocument").ParamValue = "5500009030"
+        Dim E As New EKKO_Report(con)
+        E.IncludeDocument("4501213524")
+        E.Execute()
 
-        Dim TRow = BAPI.Tables("Item_Condition").AddRow
-        TRow("ITEM_NO") = "00230"
-        TRow("SERIAL_ID") = "2044793331"
-        TRow("COND_COUNT") = "01"
-        TRow("DELETION_IND") = " "
-        TRow("COND_TYPE") = "PB00"
-        TRow("SCALE_TYPE") = "A"
-        TRow("SCALE_BASE_TY") = ""
-        TRow("SCALE_UNIT") = ""
-        TRow("SCALE_UNIT_ISO") = ""
-        TRow("SCALE_CURR") = ""
-        TRow("SCALE_CURR_ISO") = ""
-        TRow("CALCTYPCON") = "C"
-        TRow("COND_VALUE") = "10"
-        TRow("CURRENCY") = "USD"
-        TRow("CURRENCY_ISO") = "USD"
-        TRow("COND_P_UNT") = "1000"
-        TRow("COND_UNIT") = "EA"
-        TRow("COND_UNIT_ISO") = "EA"
-        TRow("NUMERATOR") = "1"
-        TRow("DENOMINATOR") = "1"
-        TRow("BASE_UOM") = "EA"
-        TRow("BASE_UOM_ISO") = "EA"
-        TRow("LOWERLIMIT") = "0.00"
-        TRow("UPPERLIMIT") = "0.00"
-        TRow("VENDOR_NO") = ""
-        TRow("CHANGE_ID") = ""
+        'Dim R As New EKPO_Report(con)
+        'R.IncludeDocument("4503401042")
+        'R.Execute()
 
-        Dim TRowX = BAPI.Tables("Item_ConditionX").AddRow
-        TRowX("COND_VALUE") = "X"
-        TRowX("DELETION_IND") = "X"
-        TRowX("CURRENCY") = "X"
-        TRowX("COND_P_UNT") = "X"
-        TRowX("ITEM_NO") = "00230"
+        'Dim BAPI = con.CreateBapi("PurchSchedAgreement", "Change")
+        'BAPI.Exports("PurchasingDocument").ParamValue = "5500009030"
 
-        TRow = BAPI.Tables("Item_Condition").AddRow
-        TRow("ITEM_NO") = "00230"
-        TRow("SERIAL_ID") = "2044793331"
-        TRow("COND_COUNT") = "02"
-        TRow("COND_TYPE") = "ZHC3"
-        TRow("COND_VALUE") = "8"
-        TRow("CURRENCY") = "USD"
-        TRow("COND_UNIT") = "EA"
-        TRow("COND_P_UNT") = "1000"
-        TRow("NUMERATOR") = "1"
-        TRow("DENOMINATOR") = "1"
+        'Dim TRow = BAPI.Tables("Item_Condition").AddRow
+        'TRow("ITEM_NO") = "00230"
+        'TRow("SERIAL_ID") = "2044793331"
+        'TRow("COND_COUNT") = "01"
+        'TRow("DELETION_IND") = " "
+        'TRow("COND_TYPE") = "PB00"
+        'TRow("SCALE_TYPE") = "A"
+        'TRow("SCALE_BASE_TY") = ""
+        'TRow("SCALE_UNIT") = ""
+        'TRow("SCALE_UNIT_ISO") = ""
+        'TRow("SCALE_CURR") = ""
+        'TRow("SCALE_CURR_ISO") = ""
+        'TRow("CALCTYPCON") = "C"
+        'TRow("COND_VALUE") = "10"
+        'TRow("CURRENCY") = "USD"
+        'TRow("CURRENCY_ISO") = "USD"
+        'TRow("COND_P_UNT") = "1000"
+        'TRow("COND_UNIT") = "EA"
+        'TRow("COND_UNIT_ISO") = "EA"
+        'TRow("NUMERATOR") = "1"
+        'TRow("DENOMINATOR") = "1"
+        'TRow("BASE_UOM") = "EA"
+        'TRow("BASE_UOM_ISO") = "EA"
+        'TRow("LOWERLIMIT") = "0.00"
+        'TRow("UPPERLIMIT") = "0.00"
+        'TRow("VENDOR_NO") = ""
+        'TRow("CHANGE_ID") = ""
 
-        TRowX = BAPI.Tables("Item_ConditionX").AddRow
-        TRowX("ITEM_NO") = "00230"
-        'TRowX("SERIAL_ID") = "X"
-        'TRowX("COND_COUNT") = "X"
-        'TRowX("COND_TYPE") = "X"
+        'Dim TRowX = BAPI.Tables("Item_ConditionX").AddRow
         'TRowX("COND_VALUE") = "X"
+        'TRowX("DELETION_IND") = "X"
         'TRowX("CURRENCY") = "X"
-        'TRowX("COND_UNIT") = "X"
         'TRowX("COND_P_UNT") = "X"
-        'TRowX("NUMERATOR") = "X"
-        'TRowX("DENOMINATOR") = "X"
+        'TRowX("ITEM_NO") = "00230"
+
+        'TRow = BAPI.Tables("Item_Condition").AddRow
+        'TRow("ITEM_NO") = "00230"
+        'TRow("SERIAL_ID") = "2044793331"
+        'TRow("COND_COUNT") = "02"
+        'TRow("COND_TYPE") = "ZHC3"
+        'TRow("COND_VALUE") = "8"
+        'TRow("CURRENCY") = "USD"
+        'TRow("COND_UNIT") = "EA"
+        'TRow("COND_P_UNT") = "1000"
+        'TRow("NUMERATOR") = "1"
+        'TRow("DENOMINATOR") = "1"
+
+        'TRowX = BAPI.Tables("Item_ConditionX").AddRow
+        'TRowX("ITEM_NO") = "00230"
+        ''TRowX("SERIAL_ID") = "X"
+        ''TRowX("COND_COUNT") = "X"
+        ''TRowX("COND_TYPE") = "X"
+        ''TRowX("COND_VALUE") = "X"
+        ''TRowX("CURRENCY") = "X"
+        ''TRowX("COND_UNIT") = "X"
+        ''TRowX("COND_P_UNT") = "X"
+        ''TRowX("NUMERATOR") = "X"
+        ''TRowX("DENOMINATOR") = "X"
 
 
-        TRow = BAPI.Tables("Item_Cond_Validity").AddRow
-        TRow("ITEM_NO") = "00230"
-        TRow("SERIAL_ID") = "2044793331"
-        TRow("PLANT") = ""
-        TRow("VALID_FROM") = "20140101"
-        TRow("VALID_TO") = "99991231"
+        'TRow = BAPI.Tables("Item_Cond_Validity").AddRow
+        'TRow("ITEM_NO") = "00230"
+        'TRow("SERIAL_ID") = "2044793331"
+        'TRow("PLANT") = ""
+        'TRow("VALID_FROM") = "20140101"
+        'TRow("VALID_TO") = "99991231"
 
-        TRowX = BAPI.Tables("Item_Cond_ValidityX").AddRow
-        TRowX("VALID_FROM") = "X"
-        TRowX("VALID_TO") = "X"
-        TRowX("ITEM_NO") = "00230"
-        TRowX("SERIAL_ID") = "X"
-        TRowX("PLANT") = "X"
+        'TRowX = BAPI.Tables("Item_Cond_ValidityX").AddRow
+        'TRowX("VALID_FROM") = "X"
+        'TRowX("VALID_TO") = "X"
+        'TRowX("ITEM_NO") = "00230"
+        'TRowX("SERIAL_ID") = "X"
+        'TRowX("PLANT") = "X"
 
-        BAPI.Execute()
-        BAPI.CommitWork(True)
+        'BAPI.Execute()
+        'BAPI.CommitWork(True)
 
     End Sub
 

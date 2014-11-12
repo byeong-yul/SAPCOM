@@ -64,12 +64,12 @@
   </Servers>
   <Servers>
     <Box>GBP</Box>
-    <Host>GBP</Host>
-    <Number>1</Number>
+    <Host>gbp.na.pg.com</Host>
+    <Number>2</Number>
     <Client>480</Client>
-    <MessageServer>GBP.na.pg.com</MessageServer>
+    <MessageServer>gbp.na.pg.com</MessageServer>
     <LogonGroup>SPACE</LogonGroup>
-    <UseLoadBalancing>true</UseLoadBalancing>
+    <UseLoadBalancing>false</UseLoadBalancing>
     <SNC_PN>p:sap/gbp-db@NA.PG.COM</SNC_PN>
   </Servers>
   <Servers>
@@ -235,7 +235,7 @@
   <Servers>
     <Box>GBA</Box>
     <Host>GBA</Host>
-    <Number>3</Number>
+    <Number>4</Number>
     <Client>480</Client>
     <MessageServer>gba.na.pg.com</MessageServer>
     <LogonGroup></LogonGroup>
